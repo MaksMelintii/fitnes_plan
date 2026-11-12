@@ -1,0 +1,9 @@
+{
+  "name": "Мій фітнес-план — 12 тижнів",
+  "short_name": "Фітнес-план",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d110f",
+  "theme_color": "#101411",
+  "description": "Персональна програма тренувань на 12 тижнів"
+}

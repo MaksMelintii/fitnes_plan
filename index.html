@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101411">
+<meta name="description" content="Персональний план тренувань на 12 тижнів">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Мій фітнес-план</title>
+<style>
+:root{--bg:#0d110f;--panel:#171e1a;--panel2:#202a24;--text:#f1f5f2;--muted:#a7b4aa;--accent:#a8e063;--line:#2b3830;--warn:#f2c879}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:26px 18px 18px;background:linear-gradient(145deg,#1b2a20,#101411 70%);border-bottom:1px solid var(--line)}
+.wrap{max-width:760px;margin:auto;padding:0 16px 40px}
+.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+h1{font-size:29px;line-height:1.1;margin:8px 0}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:0 0 7px}
+.sub,.muted{color:var(--muted)}.sub{font-size:14px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:14px 0}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 14px;border-radius:999px;white-space:nowrap;font-weight:700}
+.tab.active{background:var(--accent);color:#152014;border-color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+.hero{background:linear-gradient(145deg,#25372a,#172019);border-color:#3a503e}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pill{font-size:12px;color:var(--accent);border:1px solid #536c43;border-radius:99px;padding:5px 9px;font-weight:800}
+.big{font-size:25px;font-weight:850;margin:4px 0}
+.progress{height:9px;background:#303b33;border-radius:99px;overflow:hidden;margin:10px 0}
+.progress span{display:block;height:100%;background:var(--accent);width:0%;transition:width .2s}
+.exercise{display:flex;gap:11px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.exercise:last-child{border:0}.exercise input{width:21px;height:21px;accent-color:var(--accent);margin-top:2px;flex:none}
+.exercise label{flex:1}.exercise strong{display:block}.detail{font-size:13px;color:var(--muted);margin-top:3px}
+button,.btn{border:0;border-radius:12px;background:var(--accent);color:#142014;font-weight:800;padding:11px 14px;font-size:14px}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+input[type=date],input[type=number]{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px;font:inherit;width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--panel2);padding:12px;border-radius:13px}.stat b{font-size:20px;display:block}
+.small{font-size:12px;color:var(--muted)}
+.weeklist{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.week{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:9px 2px}
+.week.selected{border-color:var(--accent);color:var(--accent)}
+.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+.notice{border-left:3px solid var(--warn);padding:10px 12px;background:#28251b;border-radius:8px;color:#e9dfc7;font-size:13px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+ <div class="eyebrow">12-тижнева трансформація</div>
+ <h1>Мій фітнес-план</h1>
+ <div class="sub">Тренування, біг і прогрес — в одному місці</div>
+</div></header>
+<main class="wrap">
+ <nav class="tabs">
+  <button class="tab active" data-tab="today">Сьогодні</button>
+  <button class="tab" data-tab="plan">План</button>
+  <button class="tab" data-tab="progress">Мій прогрес</button>
+  <button class="tab" data-tab="guide">Правила</button>
+ </nav>
+
+ <section id="today">
+  <div class="card hero">
+   <div class="row"><span class="eyebrow" id="dateLabel">Твій день</span><span class="pill" id="weekPill">Тиждень 1</span></div>
+   <div class="big" id="todayTitle">Завантаження…</div>
+   <div class="sub" id="todayDesc"></div>
+   <div class="progress"><span id="dayBar"></span></div>
+   <div class="row"><span class="small" id="dayProgress">0 з 0 виконано</span><span class="small" id="dayPercent">0%</span></div>
+  </div>
+  <div class="card">
+   <h2>Твої завдання</h2>
+   <div id="tasks"></div>
+   <div class="row" style="margin-top:12px"><button class="secondary" id="clearDay">Скинути відмітки</button><button id="finishDay">Завершити день</button></div>
+   <p class="small" id="finishMsg"></p>
+  </div>
+  <div class="card">
+   <div class="row"><div><h2>Відпочинок між підходами</h2><div class="small">Стандартний таймер — 60 секунд</div></div><div class="big" id="timer">01:00</div></div>
+   <div class="row" style="margin-top:10px"><button id="startTimer">Старт</button><button class="secondary" id="resetTimer">Скинути</button></div>
+  </div>
+  <div class="card">
+   <h2>Налаштування старту</h2>
+   <div class="small" style="margin-bottom:8px">Обери дату першого дня програми. Відлік 12 тижнів почнеться з неї.</div>
+   <input type="date" id="startDate">
+  </div>
+ </section>
+
+ <section id="plan" class="hidden">
+  <div class="card">
+   <h2>Програма на 12 тижнів</h2>
+   <div class="small">Обери тиждень, щоб подивитися кардіо-прогресію.</div>
+   <div class="weeklist" id="weekButtons" style="margin-top:12px"></div>
+  </div>
+  <div class="card" id="weekDetails"></div>
+  <div class="card">
+   <h2>Щотижневий розклад</h2>
+   <div class="small">Пн — силове A · Вт — кардіо · Ср — силове B · Чт — легка ходьба · Пт — силове C · Сб — тривале кардіо · Нд — відпочинок.</div>
+  </div>
+ </section>
+
+ <section id="progress" class="hidden">
+  <div class="card">
+   <h2>Мій прогрес</h2>
+   <div class="grid">
+    <div class="stat"><b id="doneCount">0</b><span class="small">виконаних днів</span></div>
+    <div class="stat"><b id="overallPct">0%</b><span class="small">завдання сьогодні</span></div>
+    <div class="stat"><b id="latestWeight">—</b><span class="small">остання вага, кг</span></div>
+    <div class="stat"><b id="latestWaist">—</b><span class="small">остання талія, см</span></div>
+   </div>
+  </div>
+  <div class="card">
+   <h2>Записати вимірювання</h2>
+   <div class="grid">
+    <div><label class="small" for="weight">Вага (кг)</label><input id="weight" type="number" min="30" max="250" step=".1" placeholder="81.0"></div>
+    <div><label class="small" for="waist">Талія (см)</label><input id="waist" type="number" min="40" max="200" step=".5" placeholder="Наприклад, 90"></div>
+   </div>
+   <button id="saveMeasure" style="margin-top:12px">Зберегти</button>
+   <div id="measureMsg" class="small" style="margin-top:8px"></div>
+  </div>
+  <div class="card"><h2>Історія вимірювань</h2><div id="history" class="small">Поки немає записів.</div></div>
+ </section>
+
+ <section id="guide" class="hidden">
+  <div class="card">
+   <h2>Основні правила</h2>
+   <ul class="sub">
+    <li>Перед тренуванням 5 хв легкої ходьби, після — 5 хв заминки.</li>
+    <li>Легкий біг має дозволяти говорити повними реченнями. Не женись за швидкістю.</li>
+    <li>Між силовими підходами відпочивай 60–90 секунд. Залишай 1–3 повторення «в запасі».</li>
+    <li>Якщо тренування надто важке — повтори попередній тиждень або зменш обсяг.</li>
+    <li>Не потрібно тренуватися через біль. При болю в грудях, запамороченні чи незвичній задишці зупинись.</li>
+   </ul>
+  </div>
+  <div class="card">
+   <h2>Харчування для старту</h2>
+   <p class="sub">Орієнтир, а не жорстка норма: близько 2300–2400 ккал/день, білок 130–160 г. Оцінюй середню вагу за тиждень і самопочуття; за 2–3 тижні можна обережно скоригувати калорійність.</p>
+   <p class="sub">Сон 7–9 годин. Вода — за спрагою, погодою та потовиділенням. Жир не спалюється локально лише на животі: допомагають загальний дефіцит калорій і силові тренування.</p>
+  </div>
+  <div class="notice">План розрахований на початківця. Якщо з'являється різкий біль або погане самопочуття — припини вправу. Не намагайся надолужити пропущені тренування подвійним навантаженням.</div>
+  <div class="card"><h2>Збереження даних</h2><p class="sub">Відмітки та вимірювання зберігаються в пам'яті браузера на цьому пристрої. Не очищай дані браузера, якщо хочеш зберегти історію.</p><button class="secondary" id="exportData">Експортувати резервну копію</button></div>
+ </section>
+ <footer>Твій план • 12 тижнів • Поступовість важливіша за ідеальність</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const today=new Date(); today.setHours(0,0,0,0);
+const iso=d=>{const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)};
+const load=()=>{try{return JSON.parse(localStorage.getItem('fit12')||'{}')}catch(e){return {}}};
+let data=load(); data.start=data.start||iso(today); data.done=data.done||{}; data.measures=data.measures||[];
+const save=()=>localStorage.setItem('fit12',JSON.stringify(data));
+const strengthA=[['Віджимання від підлоги або опори','3 × 6–12 повторень'],['Pike push-up або віджимання від високої опори','2 × 6–10'],['Superman','2 × 10–12'],['Зворотні скручування','3 × 10–15'],['Планка','3 × 20–40 секунд']];
+const strengthB=[['Присідання','3 × 10–15'],['Випади назад','2 × 8–10 на ногу'],['Сідничний місток','3 × 12–15'],['Підйоми на носки','3 × 15–20'],['Dead bug','3 × 8–10 на сторону']];
+const strengthC=[['Віджимання','3 × 6–12'],['Присідання','3 × 12–15'],['Сідничний місток','3 × 15'],['Випади назад','2 × 8 на ногу'],['Superman або Y-T-W','2 × 8–12'],['Бічна планка','2 × 15–30 секунд на бік']];
+const cardio=[
+'6 циклів: 1 хв легкого бігу або швидкої ходьби + 2 хв ходьби',
+'7 циклів: 1 хв легкого бігу + 2 хв ходьби',
+'6 циклів: 2 хв легкого бігу + 2 хв ходьби',
+'5 циклів: 3 хв легкого бігу + 2 хв ходьби',
+'5 циклів: 3 хв бігу + 2 хв ходьби; за бажанням нахил 1–3%',
+'4 цикли: 5 хв бігу + 2 хв ходьби',
+'3 цикли: 8 хв бігу + 2 хв ходьби',
+'Легший тиждень: 25–30 хв легкого кардіо',
+'20 хв безперервного легкого бігу або 4 цикли 5 хв бігу + 2 хв ходьби',
+'22–25 хв легкого бігу або біг/ходьба',
+'До 25–30 хв безперервного легкого бігу, лише якщо комфортно',
+'25–30 хв легкого бігу або комфортні інтервали'
+];
+const saturday=['30 хв ходьби','35 хв ходьби','35–40 хв ходьби','40 хв ходьби або інтервали 3+2','40–45 хв кардіо','45 хв кардіо','45 хв кардіо','35–40 хв легкої ходьби','45–50 хв кардіо','50 хв кардіо','50–55 хв кардіо','30 хв комфортного кардіо'];
+function dayInfo(offset){
+ const week=Math.floor(offset/7)+1, day=offset%7;
+ const base=[
+  {title:'Силове тренування A',desc:'Верх тіла та корпус',tasks:[...strengthA.map(x=>({name:x[0],detail:x[1]})),{name:'Легка ходьба (за бажанням)',detail:'10–20 хв, комфортний темп'}]},
+  {title:'Кардіо: біг / ходьба',desc:'Легкий темп, без гонитви за швидкістю',tasks:[{name:'Розминка',detail:'5 хв ходьби'},{name:'Основне кардіо',detail:cardio[Math.min(week,12)-1]},{name:'Заминка',detail:'5 хв повільної ходьби'}]},
+  {title:'Силове тренування B',desc:'Ноги та корпус',tasks:strengthB.map(x=>({name:x[0],detail:x[1]}))},
+  {title:'Відновлювальна ходьба',desc:'Легкий день для відновлення',tasks:[{name:'Ходьба',detail:'20–30 хв у комфортному темпі; за бажанням нахил 1–3%'}]},
+  {title:'Силове тренування C',desc:'Все тіло',tasks:strengthC.map(x=>({name:x[0],detail:x[1]}))},
+  {title:'Тривале легке кардіо',desc:'Ходьба або легкий біг/ходьба',tasks:[{name:'Основне кардіо',detail:saturday[Math.min(week,12)-1]},{name:'Заминка',detail:'5 хв легкої ходьби'}]},
+  {title:'Відпочинок',desc:'Відновлення — теж частина програми',tasks:[{name:'Відпочинок',detail:'За бажанням спокійна прогулянка 10–20 хв'}]}
+ ];
+ if(week===8 && (day===0||day===2||day===4)) base[day].desc+=' · зменш кількість підходів приблизно на третину';
+ return {...base[day],week,day};
+}
+function offsetNow(){const a=new Date(data.start+'T00:00:00');return Math.floor((today-a)/86400000)}
+function dayKey(o){return new Date(new Date(data.start+'T00:00:00').getTime()+o*86400000).toISOString().slice(0,10)}
+function renderToday(){
+ const o=offsetNow();
+ if(o<0){$('#todayTitle').textContent='Програма ще не почалась';$('#todayDesc').textContent='Зміни дату старту нижче або дочекайся її.';$('#tasks').innerHTML='';$('#weekPill').textContent='Очікування';return}
+ if(o>=84){$('#todayTitle').textContent='12 тижнів завершено!';$('#todayDesc').textContent='Вітаю! Переглянь свій прогрес і виріши, як продовжити.';$('#tasks').innerHTML='';$('#weekPill').textContent='Фініш';return}
+ const info=dayInfo(o), key=dayKey(o), checked=data.done[key]||[];
+ $('#dateLabel').textContent=new Date().toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'long'});
+ $('#weekPill').textContent=`Тиждень ${info.week} · День ${o+1}`;
+ $('#todayTitle').textContent=info.title;$('#todayDesc').textContent=info.desc;
+ $('#tasks').innerHTML=info.tasks.map((t,i)=>`<div class="exercise"><input type="checkbox" id="task${i}" data-index="${i}" ${checked.includes(i)?'checked':''}><label for="task${i}"><strong>${t.name}</strong><div class="detail">${t.detail}</div></label></div>`).join('');
+ document.querySelectorAll('#tasks input').forEach(el=>el.addEventListener('change',()=>{const arr=new Set(data.done[key]||[]);el.checked?arr.add(+el.dataset.index):arr.delete(+el.dataset.index);data.done[key]=[...arr];save();updateDayProgress()}));
+ $('#finishMsg').textContent=checked.length===info.tasks.length?'Усі завдання на сьогодні відмічені. Чудова робота!':'Відмічай виконані завдання — прогрес збережеться автоматично.';
+ updateDayProgress();
+}
+function updateDayProgress(){const o=offsetNow();if(o<0||o>=84)return;const info=dayInfo(o),n=(data.done[dayKey(o)]||[]).length,p=Math.round(n/info.tasks.length*100);$('#dayBar').style.width=p+'%';$('#dayProgress').textContent=`${n} з ${info.tasks.length} виконано` ;$('#dayPercent').textContent=p+'%';$('#finishMsg').textContent=p===100?'Усі завдання на сьогодні відмічені. Чудова робота!':'';renderProgress()}
+function renderPlan(selected=1){$('#weekButtons').innerHTML=Array.from({length:12},(_,i)=>`<button class="week ${i+1===selected?'selected':''}" data-week="${i+1}">${i+1}</button>`).join('');document.querySelectorAll('.week').forEach(b=>b.onclick=()=>renderPlan(+b.dataset.week));let w=selected;$('#weekDetails').innerHTML=`<div class="row"><h2>Тиждень ${w}</h2><span class="pill">${w===8?'Полегшений':'Поступове навантаження'}</span></div><h3>Вівторок — біг / ходьба</h3><p class="sub">${cardio[w-1]}</p><h3>Субота — тривале кардіо</h3><p class="sub">${saturday[w-1]}</p><p class="small">Усі інші дні залишаються за щотижневим розкладом нижче. Якщо навантаження завелике — повтори тиждень.</p>`}
+function renderProgress(){const days=Object.values(data.done).filter(a=>a&&a.length>0).length;$('#doneCount').textContent=days;const o=offsetNow();if(o>=0&&o<84){const inf=dayInfo(o),p=Math.round((data.done[dayKey(o)]||[]).length/inf.tasks.length*100);$('#overallPct').textContent=p+'%'}else $('#overallPct').textContent='—';const m=data.measures;$('#latestWeight').textContent=m.length&&m[m.length-1].weight?m[m.length-1].weight:'—';$('#latestWaist').textContent=m.length&&m[m.length-1].waist?m[m.length-1].waist:'—';$('#history').innerHTML=m.length?[...m].reverse().map(x=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)">${x.date}: ${x.weight?x.weight+' кг':''} ${x.waist?'· талія '+x.waist+' см':''}</div>`).join(''):'Поки немає записів.'}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['today','plan','progress','guide'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='progress')renderProgress()});
+$('#startDate').value=data.start;$('#startDate').onchange=e=>{data.start=e.target.value||iso(today);save();renderToday();renderPlan(1)};
+$('#clearDay').onclick=()=>{const o=offsetNow();if(o>=0&&o<84){delete data.done[dayKey(o)];save();renderToday()}};
+$('#finishDay').onclick=()=>{const o=offsetNow();if(o<0||o>=84)return;const inf=dayInfo(o);data.done[dayKey(o)]=inf.tasks.map((_,i)=>i);save();renderToday()};
+$('#saveMeasure').onclick=()=>{const weight=$('#weight').value,waist=$('#waist').value;if(!weight&&!waist){$('#measureMsg').textContent='Введи вагу або об’єм талії.';return}data.measures.push({date:iso(today),weight:weight?Number(weight):null,waist:waist?Number(waist):null});save();$('#weight').value='';$('#waist').value='';$('#measureMsg').textContent='Вимірювання збережено.';renderProgress()};
+let timer=60, interval=null;function showTimer(){$('#timer').textContent=`${String(Math.floor(timer/60)).padStart(2,'0')}:${String(timer%60).padStart(2,'0')}`}
+$('#startTimer').onclick=()=>{if(interval){clearInterval(interval);interval=null;$('#startTimer').textContent='Продовжити';return}$('#startTimer').textContent='Пауза';interval=setInterval(()=>{timer--;showTimer();if(timer<=0){clearInterval(interval);interval=null;$('#startTimer').textContent='Старт';if(navigator.vibrate)navigator.vibrate([200,100,200]);}},1000)};
+$('#resetTimer').onclick=()=>{clearInterval(interval);interval=null;timer=60;showTimer();$('#startTimer').textContent='Старт'};
+$('#exportData').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fitnes-plan-backup.json';a.click();URL.revokeObjectURL(a.href)};
+save();renderToday();renderPlan(1);renderProgress();
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
